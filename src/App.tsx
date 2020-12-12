@@ -1,5 +1,5 @@
 import React, { useReducer, useEffect } from "react";
-import api, { Job, JobAssignment, Employee } from "./Api";
+import API, { Job, JobAssignment, Employee } from "./Api";
 import './App.css';
 
 /**
@@ -177,7 +177,7 @@ function App() {
 
   //Makes a Roles request and update roles state
   const requestJobs = () => {
-    api
+    API
       .getAllJobs()
       .then(res => {
         dispatch({ type: "setRoles", payload: res });
@@ -193,7 +193,7 @@ function App() {
 
   //Makes an Employees request and update employees state
   const requestEmployees = () => {
-    api
+    API
       .getAllEmployees()
       .then(res => {
         dispatch({ type: "setEmployees", payload: res });

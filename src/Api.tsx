@@ -89,7 +89,7 @@ async function wait(ms: number) {
   });
 }
 
-export default {
+const API = {
   /**
    * Returns a list of all employees in the system.
    */
@@ -105,3 +105,5 @@ export default {
     return Promise.resolve(jobs);
   }
 };
+
+export default API;
