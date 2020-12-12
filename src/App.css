@@ -1,38 +1,19 @@
 .App {
-  text-align: center;
+  padding: 10rem;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.employee-card {
+  margin: 2rem 0;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #333;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.employee-roles {
+  margin-top: 1rem;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.employee-roles__list {
+  margin: 0;
+  padding-left: 1rem;
 }
 
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
