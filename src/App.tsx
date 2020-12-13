@@ -189,6 +189,19 @@ function App() {
 
   useEffect(() => {
     requestJobs();
+
+    fetch('/.netlify/functions/employee-read')
+    .then((response) => {
+      console.log('******1');
+      console.log(response);
+    })
+    .catch((e) => {
+      console.log('******2');
+      console.log(e);
+    })
+
+    
+
   }, []);
 
   //Makes an Employees request and update employees state
@@ -205,6 +218,7 @@ function App() {
 
   return (
     <div className="App">
+      <h1>Danny</h1>
       <ButtonGlobal handler={requestEmployees} text="Get Employees" />
       {state.error && (
         <MessageContainer classes="message--error" text={state.error} />
