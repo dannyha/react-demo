@@ -2,9 +2,6 @@ import React, { useReducer, useEffect } from "react";
 import API, { Job, JobAssignment, Employee } from "./Api";
 import './App.css';
 
-const faunadb = require('faunadb')
-const q = faunadb.query
-
 /**
  * Card container component
  */
@@ -190,39 +187,8 @@ function App() {
       });
   };
 
-  const getEmpl = () => {
-    const client = new faunadb.Client({
-      secret: process.env.FAUNADB_SERVER_SECRET
-    }) 
-    return client.query(q.Get(q.Collection('Employees')))
-    .then((response: any) => {
-      console.log('success', response)
-      return {
-        statusCode: 200,
-        body: JSON.stringify(response)
-      }
-    }).catch((error: any) => {
-      console.log('error', error)
-      return {
-        statusCode: 400,
-        body: JSON.stringify(error)
-      }
-    })
-  }
-
   useEffect(() => {
     requestJobs();
-
-    getEmpl()
-    .then((res: any) => {
-      console.log('****1');
-      console.log(res);
-    })
-    .catch((e: any) => {
-      console.log('****2');
-      console.log(e);
-    })
-
   }, []);
 
   //Makes an Employees request and update employees state
