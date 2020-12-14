@@ -1,119 +1,16 @@
 import React, { useReducer, useEffect } from "react";
-import API, { Job, JobAssignment, Employee } from "./Api";
 import './App.css';
 
-/**
- * Card container component
- */
-type TypeCardContainer = {
-  classes?: string;
-  children: React.ReactNode;
-};
-function CardContainer(props: TypeCardContainer) {
-  return (
-    <div className={`card-container ${props.classes ? props.classes : ""}`}>
-      {props.children}
-    </div>
-  );
-}
+import { Job, Employee } from "./Api";
 
-/**
- * Message component
- */
-type TypeMessageContainer = {
-  classes?: string;
-  text: string;
-};
-function MessageContainer(props: TypeMessageContainer) {
-  return (
-    <div className={`message ${props.classes ? props.classes : ""}`}>
-      {props.text}
-    </div>
-  );
-}
+import CardContainer from './components/card';
+import MessageContainer from './components/message';
+import ButtonGlobal from './components/button';
+import ListContainer from './components/list';
+import EmployeeDetails from './components/employee-details';
+import EmployeeRoles from './components/employee-roles';
 
-/**
- * Button component
- */
-type TypeButtonGlobal = {
-  classes?: string;
-  handler: () => void;
-  text: string;
-};
-function ButtonGlobal(props: TypeButtonGlobal) {
-  return (
-    <button
-      className={`button ${props.classes ? props.classes : ""}`}
-      onClick={props.handler}
-    >
-      {props.text}
-    </button>
-  );
-}
-
-/**
- * List component
- */
-type TypeListContainer = {
-  classes?: string;
-  title: string;
-  children: React.ReactNode;
-};
-function ListContainer(props: TypeListContainer) {
-  return (
-    <div className={`list-container ${props.classes ? props.classes : ""}`}>
-      <div className="list-container__title">{props.title}</div>
-      {props.children}
-    </div>
-  );
-}
-
-/**
- * Component for employee info
- */
-type TypeEmployeeDetails = {
-  data: Employee;
-};
-function EmployeeDetails(props: TypeEmployeeDetails) {
-  return (
-    <div className="employee-info">
-      <div className="employee-info__name">
-        {props.data.firstName} {props.data.lastName}
-      </div>
-      <div className="employee-info__location">{props.data.location}</div>
-    </div>
-  );
-}
-
-/**
- * Component for employee roles
- */
-type TypeEmployeeRoles = {
-  jobs: JobAssignment[];
-  roles: {
-    [key: string]: Job;
-  };
-};
-function EmployeeRoles(props: TypeEmployeeRoles) {
-  return (
-    <ul className="employee-roles__list">
-      {props.jobs.map((job, key) => (
-        <li className="employee-roles__role" key={key}>
-          <span className="employee-roles__tenure">
-            {job.startYear}-{job.endYear ? job.endYear : "Present"}
-          </span>{" "}
-          –{" "}
-          <span className="employee-roles__position">
-            {//Could get prop to trigger roles request
-            props.roles[job.jobId]
-              ? props.roles[job.jobId].name
-              : "Not Available"}
-          </span>
-        </li>
-      ))}
-    </ul>
-  );
-}
+import { ApolloClient, InMemoryCache, gql } from '@apollo/client';
 
 /**
  * Application State
@@ -156,6 +53,10 @@ function reducer(state: State, action: Action): State {
         error: ""
       };
     case "setEmployees":
+
+      console.log('setting');
+      console.log(action.payload);
+
       return {
         ...state,
         employees: action.payload,
@@ -175,16 +76,42 @@ function reducer(state: State, action: Action): State {
 function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
 
+  const client = new ApolloClient({
+    uri: 'https://dannyha.hasura.app/v1/graphql',
+    cache: new InMemoryCache()
+  });
+
   //Makes a Roles request and update roles state
   const requestJobs = () => {
-    API
-      .getAllJobs()
-      .then(res => {
-        dispatch({ type: "setRoles", payload: res });
-      })
-      .catch(e => {
-        dispatch({ type: "setError", payload: "Error getting roles" });
-      });
+    // STATIC DATA
+    // API
+    //   .getAllJobs()
+    //   .then(res => {
+    //     console.log(res)
+    //     dispatch({ type: "setRoles", payload: res });
+    //   })
+    //   .catch(e => {
+    //     dispatch({ type: "setError", payload: "Error getting roles" });
+    //   });
+
+    // GQL
+    client
+    .query({
+      query: gql`
+        query ReactDemo {
+          jobs {
+            name
+            id
+          }
+        }
+      `
+    })
+    .then(res => {
+      dispatch({ type: "setRoles", payload: res.data.jobs });
+    })
+    .catch(e => {
+      dispatch({ type: "setError", payload: "Error getting employees" });
+    });
   };
 
   useEffect(() => {
@@ -193,14 +120,43 @@ function App() {
 
   //Makes an Employees request and update employees state
   const requestEmployees = () => {
-    API
-      .getAllEmployees()
-      .then(res => {
-        dispatch({ type: "setEmployees", payload: res });
-      })
-      .catch(e => {
-        dispatch({ type: "setError", payload: "Error getting employees" });
-      });
+
+    // STATIC DATA
+    // API 
+    //   .getAllEmployees()
+    //   .then(res => {
+    //     dispatch({ type: "setEmployees", payload: res });
+    //   })
+    //   .catch(e => {
+    //     dispatch({ type: "setError", payload: "Error getting employees" });
+    //   });
+
+    // GQL
+    client
+    .query({
+      query: gql`
+        query ReactDemo {
+          employees {
+            birthYear
+            firstName
+            lastName
+            location
+            jobAssignments {
+              startYear
+              jobId
+              endYear
+            }
+          }
+        }
+      `
+    })
+    .then(res => {
+      dispatch({ type: "setEmployees", payload: res.data.employees });
+    })
+    .catch(e => {
+      dispatch({ type: "setError", payload: "Error getting employees" });
+    });
+
   };
 
   return (
