@@ -1,4 +1,4 @@
-import React, { useReducer, useEffect } from "react";
+import React, { useReducer, useEffect, useMemo, useCallback } from "react";
 import './App.css';
 
 import { Job, Employee } from "./Api";
@@ -53,10 +53,6 @@ function reducer(state: State, action: Action): State {
         error: ""
       };
     case "setEmployees":
-
-      console.log('setting');
-      console.log(action.payload);
-
       return {
         ...state,
         employees: action.payload,
@@ -76,47 +72,51 @@ function reducer(state: State, action: Action): State {
 function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const client = new ApolloClient({
-    uri: 'https://dannyha.hasura.app/v1/graphql',
-    cache: new InMemoryCache()
-  });
+  const client = useMemo(() => {
+      return new ApolloClient({
+        uri: 'https://dannyha.hasura.app/v1/graphql',
+        cache: new InMemoryCache()
+      });
+    }, []
+  );
 
   //Makes a Roles request and update roles state
-  const requestJobs = () => {
-    // STATIC DATA
-    // API
-    //   .getAllJobs()
-    //   .then(res => {
-    //     console.log(res)
-    //     dispatch({ type: "setRoles", payload: res });
-    //   })
-    //   .catch(e => {
-    //     dispatch({ type: "setError", payload: "Error getting roles" });
-    //   });
+  const requestJobs = useCallback(() => {
+      // // STATIC DATA
+      // API
+      //   .getAllJobs()
+      //   .then(res => {
+      //     console.log(res)
+      //     dispatch({ type: "setRoles", payload: res });
+      //   })
+      //   .catch(e => {
+      //     dispatch({ type: "setError", payload: "Error getting roles" });
+      //   });
 
-    // GQL
-    client
-    .query({
-      query: gql`
-        query ReactDemo {
-          jobs {
-            name
-            id
+      // GQL
+      client
+      .query({
+        query: gql`
+          query ReactDemo {
+            jobs {
+              name
+              id
+            }
           }
-        }
-      `
-    })
-    .then(res => {
-      dispatch({ type: "setRoles", payload: res.data.jobs });
-    })
-    .catch(e => {
-      dispatch({ type: "setError", payload: "Error getting employees" });
-    });
-  };
+        `
+      })
+      .then(res => {
+        dispatch({ type: "setRoles", payload: res.data.jobs });
+      })
+      .catch(e => {
+        dispatch({ type: "setError", payload: "Error getting employees" });
+      });
+    }, [client]
+  );
 
   useEffect(() => {
     requestJobs();
-  }, []);
+  }, [requestJobs]);
 
   //Makes an Employees request and update employees state
   const requestEmployees = () => {
