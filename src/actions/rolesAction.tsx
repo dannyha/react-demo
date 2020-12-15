@@ -7,6 +7,8 @@ const set = (rolesObj: Job[]) => {
   }
 }
 
-export default {
+const rolesAction = {
   set
 }
+
+export default rolesAction;
