@@ -21,7 +21,7 @@ function App() {
             <Link to="/employees">Employees</Link>
           </li>
           <li>
-            <Link to="/tests">Tests</Link>
+            <Link to="/tests">Get global roles state</Link>
           </li>
         </ul>
       </nav>

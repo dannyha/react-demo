@@ -1,10 +1,10 @@
 import React, { useReducer, useEffect, useMemo, useCallback, useRef } from "react";
 
 import { Job, Employee } from "../Api";
-import CardContainer from '../components/Card';
-import MessageContainer from '../components/Message';
-import ButtonGlobal from '../components/Button';
-import ListContainer from '../components/List';
+import Card from '../components/Card';
+import Message from '../components/Message';
+import Button from '../components/Button';
+import List from '../components/List';
 import EmployeeDetails from '../components/EmployeeDetails';
 import EmployeeRoles from '../components/EmployeeRoles';
 
@@ -151,28 +151,28 @@ function Employees() {
   return (
     <div className="Employees-Container">
       <h1>Danny</h1>
-      <ButtonGlobal handler={requestEmployees} text="Get Employees" />
+      <Button handler={requestEmployees} text="Get Employees" />
       {state.error && (
-        <MessageContainer classes="message--error" text={state.error} />
+        <Message classes="message--error" text={state.error} />
       )}
       {state.employees.length > 0 &&
         state.employees.map((emp, key) => (
-          <CardContainer classes="employee-card" key={key}>
+          <Card classes="employee-card" key={key}>
             <EmployeeDetails data={emp} />
             {state.rolesDefault.length > 0 && emp.jobAssignments.length > 0 ? (
-              <ListContainer title="Job Assignments" classes="employee-roles">
+              <List title="Job Assignments" classes="employee-roles">
                 <EmployeeRoles jobs={emp.jobAssignments} roles={state.roles} />
-              </ListContainer>
+              </List>
             ) : (
-              <MessageContainer
+              <Message
                 classes="message--warning"
                 text="Job Assignments unavailable"
               />
             )}
-          </CardContainer>
+          </Card>
         ))}
       {state.employeeSet && state.employees.length === 0 && (
-        <MessageContainer
+        <Message
           classes="message--warning"
           text="There are no Employees"
         />

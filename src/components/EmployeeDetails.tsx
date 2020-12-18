@@ -5,6 +5,7 @@ import { Employee } from "../Api";
  * Component for employee info
  */
 type TypeEmployeeDetails = {
+  /** Employee object */
   data: Employee;
 };
 

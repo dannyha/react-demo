@@ -3,13 +3,16 @@ import React from "react";
 /**
  * Button component
  */
-type TypeButtonGlobal = {
+type TypeButton = {
+  /** Class modifiers */
   classes?: string;
+  /** Handler */
   handler: () => void;
+  /** Text */
   text: string;
 };
 
-export default function ButtonGlobal(props: TypeButtonGlobal) {
+export default function Button(props: TypeButton) {
   return (
     <button
       className={`button ${props.classes ? props.classes : ""}`}

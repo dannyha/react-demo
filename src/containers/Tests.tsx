@@ -12,7 +12,7 @@ function Tests() {
 
   return (
     <div className="Tests-Container">
-      TESTS
+      See console
     </div>
   );
 }
